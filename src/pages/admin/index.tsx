@@ -27,7 +27,7 @@ export function Admin() {
     const [urlLink, setUrlLink] = useState("");
     const [backgroundColorLink, setBackgroundColorLink] = useState("#F1F1F1");
     const [textColorLink, setTextColorLink] = useState("#121212");
-    const [links, setLinks] = useState<LinkProps[]>([])
+    const [links, setLinks] = useState<LinkProps[]>([]);
 
     useEffect(() => {
         const linksRef = collection(db, "links");
@@ -51,7 +51,7 @@ export function Admin() {
 
         return () => {
             unsub();
-        }
+        };
     }, []);
 
     function handleRegister(e: FormEvent) {
@@ -86,12 +86,17 @@ export function Admin() {
             });
     }
 
+    async function handleDeleteLink(id: string) {
+        const docRef = doc(db, "links", id)
+        await deleteDoc(docRef)
+    }
+
     return (
         <div className="flex flex-col items-center min-h-screen pb-7 px-2">
             <Header />
 
             <form
-                className="flex flex-col mt-8 mb-3 w-full max-w-xl"
+                className="flex flex-col mt-8 w-full max-w-xl"
                 onSubmit={handleRegister}
             >
                 <label className="text-white font-medium mt-2 mb-2">
@@ -163,34 +168,41 @@ export function Admin() {
 
                 <button
                     type="submit"
-                    className="bg-blue-600 h-9 rounded-md text-white font-medium gap-4 flex items-center justify-center mb-7"
+                    className="bg-blue-600 h-9 rounded-md text-white font-medium gap-4 flex items-center justify-center mb-4"
                 >
                     Cadastrar
                 </button>
             </form>
 
-            <h2 className="font-bold mb-4 text-2xl">Meus Links</h2>
+            <h2 className="font-bold mb-4 text-2xl text-white">Meus Links</h2>
 
             <article className="flex flex-col w-full max-w-xl items-center select-none">
-                <section
-                    className="flex flex-row mb-4 w-full py-2 rounded-lg select-none transition-transform hover:scale-105 cursor-pointer justify-between items-center px-2"
-                    style={{ backgroundColor: "#2563eb", color: "#fff" }}
-                >
-                    <a href="">
-                        <p
-                            className="md:text-lg text-base"
-                            style={{ color: "#fff" }}
+                {links.map((link) => {
+                    return (
+                        <section
+                            key={link.id}
+                            className="flex flex-row mb-4 w-full py-2 rounded-lg select-none transition-transform hover:scale-105 cursor-pointer justify-between items-center px-2"
+                            style={{
+                                backgroundColor: link.bg,
+                                color: link.color,
+                            }}
                         >
-                            Canal no Youtube
-                        </p>
-                    </a>
+                            <p
+                                className="md:text-lg text-base"
+                            >
+                                {link.name}
+                            </p>
 
-                    <div>
-                        <button className="border border-dashed py-1 p-1 rounded bg-red-500">
-                            <FiTrash size={18} color="#fff" />
-                        </button>
-                    </div>
-                </section>
+                            <div>
+                                <button className="border border-dashed py-1 p-1 rounded bg-red-500" 
+                                    onClick={() => handleDeleteLink(link.id)}
+                                >
+                                    <FiTrash size={18} color="#fff" />
+                                </button>
+                            </div>
+                        </section>
+                    );
+                })}
             </article>
         </div>
     );
