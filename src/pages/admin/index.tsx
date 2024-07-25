@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
 import { FiTrash } from "react-icons/fi";
@@ -14,11 +14,45 @@ import {
 } from "firebase/firestore";
 import { db } from "../../services/firebaseConnections";
 
+interface LinkProps {
+    id: string;
+    name: string;
+    url: string;
+    bg: string;
+    color: string;
+}
+
 export function Admin() {
     const [nameLink, setNameLink] = useState("");
     const [urlLink, setUrlLink] = useState("");
     const [backgroundColorLink, setBackgroundColorLink] = useState("#F1F1F1");
     const [textColorLink, setTextColorLink] = useState("#121212");
+    const [links, setLinks] = useState<LinkProps[]>([])
+
+    useEffect(() => {
+        const linksRef = collection(db, "links");
+        const queryRef = query(linksRef, orderBy("created", "desc"));
+
+        const unsub = onSnapshot(queryRef, (snapshot) => {
+            let links = [] as LinkProps[];
+
+            snapshot.forEach((doc) => {
+                links.push({
+                    id: doc.id,
+                    name: doc.data().name,
+                    url: doc.data().url,
+                    bg: doc.data().bg,
+                    color: doc.data().color,
+                });
+            });
+
+            setLinks(links);
+        });
+
+        return () => {
+            unsub();
+        }
+    }, []);
 
     function handleRegister(e: FormEvent) {
         e.preventDefault();
@@ -45,7 +79,7 @@ export function Admin() {
                 setUrlLink("");
                 setBackgroundColorLink("#fff");
                 setTextColorLink("#000");
-                console.log("Link cadastrado")
+                console.log("Link cadastrado");
             })
             .catch((error) => {
                 console.log("Erro de cadastro: " + error);
