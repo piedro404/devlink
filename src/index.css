@@ -6,3 +6,28 @@ body {
     min-height: 100vh;
     background: linear-gradient(#232630, #050507);
 }
+
+/* Estilizando a barra de rolagem para navegadores baseados no WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 8px; /* Largura da barra de rolagem */
+    height: 8px; /* Altura da barra de rolagem horizontal (se aplicável) */
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Cor do fundo da track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; /* Cor do polegar (a parte que você arrasta) */
+    border-radius: 4px; /* Bordas arredondadas no polegar */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Cor do polegar ao passar o mouse */
+}
+
+/* Estilizando a barra de rolagem para o Firefox */
+body {
+    scrollbar-width: thin; /* Largura fina */
+    scrollbar-color: #888 #f1f1f1; /* Cor do polegar e da track */
+}
