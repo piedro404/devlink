@@ -12,7 +12,7 @@ export function Network() {
     const [instagram, setInstagram] = useState("");
 
     useEffect(() => {
-        function loadLinks() {
+        function loadSocial() {
             const docRef = doc(db, "social", "link");
             getDoc(docRef)
                 .then((snapshot) => {
@@ -27,6 +27,8 @@ export function Network() {
                     console.log("Erro ao buscar links: " + error);
                 });
         }
+
+        loadSocial();
     }, []);
 
     function handleRegister(e: FormEvent) {
